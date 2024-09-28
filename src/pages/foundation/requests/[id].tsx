@@ -6,44 +6,42 @@ import type { NextPageWithLayout } from '~/pages/_app';
 import type { RouterOutput } from '~/utils/trpc';
 import { trpc } from '~/utils/trpc';
 
-type PostByIdOutput = RouterOutput['post']['byId'];
+type FoundationByIdOutput = RouterOutput['foundationRequests']['byId'];
 
-function PostItem(props: { post: PostByIdOutput }) {
-  const { post } = props;
+function FoundationRequestItem(props: {
+  foundationsRequest: FoundationByIdOutput;
+}) {
+  const { foundationsRequest } = props;
   return (
     <div className="flex flex-col justify-center h-full px-8 ">
       <Link className="text-gray-300 underline mb-4" href="/">
         Home
       </Link>
-      <h1 className="text-4xl font-bold">{post.title}</h1>
-      <em className="text-gray-400">
-        Created {post.createdAt.toLocaleDateString('en-us')}
-      </em>
 
-      <p className="py-4 break-all">{post.text}</p>
+      <p className="py-4 break-all">{foundationsRequest.text}</p>
 
       <h2 className="text-2xl font-semibold py-2">Raw data:</h2>
       <pre className="bg-gray-900 p-4 rounded-xl overflow-x-scroll">
-        {JSON.stringify(post, null, 4)}
+        {JSON.stringify(foundationsRequest, null, 4)}
       </pre>
     </div>
   );
 }
 
-const PostViewPage: NextPageWithLayout = () => {
+const FoundationViewPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
-  const postQuery = trpc.post.byId.useQuery({ id });
+  const foundationQuery = trpc.foundationRequests.byId.useQuery({ id });
 
-  if (postQuery.error) {
+  if (foundationQuery.error) {
     return (
       <NextError
-        title={postQuery.error.message}
-        statusCode={postQuery.error.data?.httpStatus ?? 500}
+        title={foundationQuery.error.message}
+        statusCode={foundationQuery.error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (postQuery.status !== 'success') {
+  if (foundationQuery.status !== 'success') {
     return (
       <div className="flex flex-col justify-center h-full px-8 ">
         <div className="w-full bg-zinc-900/70 rounded-md h-10 animate-pulse mb-2"></div>
@@ -53,8 +51,8 @@ const PostViewPage: NextPageWithLayout = () => {
       </div>
     );
   }
-  const { data } = postQuery;
-  return <PostItem post={data} />;
+  const { data } = foundationQuery;
+  return <FoundationRequestItem foundationsRequest={data} />;
 };
 
-export default PostViewPage;
+export default FoundationViewPage;

@@ -69,9 +69,15 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
            * @see https://trpc.io/docs/v11/ssr
            */
           headers() {
-            if (!ctx?.req?.headers) {
+            const token = window.localStorage.getItem('token');
+            console.log({ token });
+            if (!ctx?.req?.headers && !token) {
               return {};
             }
+            const headersTemp = {
+              ...ctx?.req?.headers,
+              Authorization: `Bearer ${token}`,
+            };
             // To use SSR properly, you need to forward the client's headers to the server
             // This is so you can pass through things like cookies when we're server-side rendering
 
@@ -79,7 +85,7 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
               // If you're using Node 18 before 18.15.0, omit the "connection" header
               connection: _connection,
               ...headers
-            } = ctx.req.headers;
+            } = headersTemp;
             return headers;
           },
           /**

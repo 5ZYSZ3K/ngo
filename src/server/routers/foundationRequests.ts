@@ -2,26 +2,23 @@
  *
  * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
  */
-import { router, publicProcedure } from '../trpc';
+import { router, publicProcedure, protectedProcedure } from '../trpc';
 import type { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { prisma } from '~/server/prisma';
 
 /**
- * Default selector for Post.
+ * Default selector for Foundation.
  * It's important to always explicitly say which fields you want to return in order to not leak extra information
  * @see https://github.com/prisma/prisma/issues/9353
  */
-const defaultPostSelect = {
+const defaultFoundationRequestSelect = {
   id: true,
-  title: true,
   text: true,
-  createdAt: true,
-  updatedAt: true,
-} satisfies Prisma.PostSelect;
+} satisfies Prisma.FoundationSelect;
 
-export const postRouter = router({
+export const foundationRequestsRouter = router({
   list: publicProcedure
     .input(
       z.object({
@@ -39,8 +36,8 @@ export const postRouter = router({
       const limit = input.limit ?? 50;
       const { cursor } = input;
 
-      const items = await prisma.post.findMany({
-        select: defaultPostSelect,
+      const items = await prisma.foundationRequest.findMany({
+        select: defaultFoundationRequestSelect,
         // get an extra item at the end which we'll use as next cursor
         take: limit + 1,
         where: {},
@@ -49,15 +46,10 @@ export const postRouter = router({
               id: cursor,
             }
           : undefined,
-        orderBy: {
-          createdAt: 'desc',
-        },
       });
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         // Remove the last item and use it as next cursor
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const nextItem = items.pop()!;
         nextCursor = nextItem.id;
       }
@@ -75,31 +67,29 @@ export const postRouter = router({
     )
     .query(async ({ input }) => {
       const { id } = input;
-      const post = await prisma.post.findUnique({
+      const foundationRequest = await prisma.foundationRequest.findUnique({
         where: { id },
-        select: defaultPostSelect,
+        select: defaultFoundationRequestSelect,
       });
-      if (!post) {
+      if (!foundationRequest) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `No post with id '${id}'`,
+          message: `No foundation with id '${id}'`,
         });
       }
-      return post;
+      return foundationRequest;
     }),
-  add: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
-        id: z.string().uuid().optional(),
-        title: z.string().min(1).max(32),
         text: z.string().min(1),
       }),
     )
-    .mutation(async ({ input }) => {
-      const post = await prisma.post.create({
-        data: input,
-        select: defaultPostSelect,
-      });
-      return post;
+    .mutation(async ({ input, ctx }) => {
+      const data = {
+        ...input,
+        foundation_id: ctx.user.id,
+      };
+      await prisma.foundationRequest.create({ data });
     }),
 });

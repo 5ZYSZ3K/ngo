@@ -10,14 +10,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
+model Foundation {
   id    String @id @default(uuid())
-  title String
+  name String
   text  String
-
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/v11/data-transformers
-  // This is unique so it can be used for cursor-based pagination
+  login String
+  passwdHash String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  FoundationRequest FoundationRequest[]
+}
+
+model FoundationRequest {
+  id    String @id @default(uuid())
+  text  String
+  foundation Foundation @relation(fields: [foundation_id], references: [id])
+  foundation_id String
 }
