@@ -100,6 +100,6 @@ export const foundationRequestsRouter = router({
     )
     .query(async ({ input }) => {
       console.log('matchPrompt', input);
-      await prisma.foundationRequest.findMany({ where: {} });
+      return await prisma.foundationRequest.findMany({ where: {} });
     }),
 });

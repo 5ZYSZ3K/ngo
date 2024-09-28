@@ -5,17 +5,11 @@ import { useRouter } from 'next/router';
 import { Fragment } from 'react';
 
 const IndexPage: NextPageWithLayout = () => {
-  const foundationsRequestsQuery =
-    trpc.foundationRequests.list.useInfiniteQuery(
-      {
-        limit: 5,
-      },
-      {
-        getNextPageParam(lastPage) {
-          return lastPage.nextCursor;
-        },
-      },
-    );
+  const foundationsRequestsQuery = trpc.foundationRequests.matchPrompt.useQuery(
+    {
+      text: 'XDDDDD',
+    },
+  );
   const router = useRouter();
 
   // prefetch all foundations for instant navigation
@@ -37,7 +31,7 @@ const IndexPage: NextPageWithLayout = () => {
           {foundationsRequestsQuery.status === 'pending' && '(loading)'}
         </h2>
 
-        <button
+        {/* <button
           className="bg-gray-900 p-2 rounded-md font-semibold disabled:bg-gray-700 disabled:text-gray-400"
           onClick={() => foundationsRequestsQuery.fetchNextPage()}
           disabled={
@@ -50,7 +44,7 @@ const IndexPage: NextPageWithLayout = () => {
             : foundationsRequestsQuery.hasNextPage
             ? 'Load More'
             : 'Nothing more to load'}
-        </button>
+        </button> */}
 
         <button
           className="bg-gray-900 p-2 rounded-md font-semibold"
@@ -59,20 +53,20 @@ const IndexPage: NextPageWithLayout = () => {
           Add a request!
         </button>
 
-        {foundationsRequestsQuery.data?.pages.map((page, index) => (
-          <Fragment key={page.items[0]?.id ?? index}>
-            {page.items.map((item) => (
-              <article key={item.id}>
-                <h3 className="text-2xl font-semibold">{item.id}</h3>
-                <Link
-                  className="text-gray-400"
-                  href={`/foundation/requests/${item.id}`}
-                >
-                  View more
-                </Link>
-              </article>
-            ))}
-          </Fragment>
+        {foundationsRequestsQuery.data?.map((item) => (
+          // <Fragment key={page.items[0]?.id ?? index}>
+          //   {page.items.map((item) => (
+          <article key={item.id}>
+            <h3 className="text-2xl font-semibold">{item.id}</h3>
+            <Link
+              className="text-gray-400"
+              href={`/foundation/requests/${item.id}`}
+            >
+              View more
+            </Link>
+          </article>
+          //   ))}
+          // </Fragment>
         ))}
       </div>
     </div>
