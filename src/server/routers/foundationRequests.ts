@@ -92,4 +92,14 @@ export const foundationRequestsRouter = router({
       };
       await prisma.foundationRequest.create({ data });
     }),
+  matchPrompt: publicProcedure
+    .input(
+      z.object({
+        text: z.string().min(1),
+      }),
+    )
+    .query(async ({ input }) => {
+      console.log('matchPrompt', input);
+      await prisma.foundationRequest.findMany({ where: {} });
+    }),
 });
