@@ -16,9 +16,13 @@ async function main() {
     create: {
       id: firstFoundationId,
       name: 'Pjeski',
-      text: 'This is an example foundation generated from `prisma/seed.ts`',
+      description:
+        'This is an example foundation generated from `prisma/seed.ts`',
       login: 'admin',
       passwdHash: 'admin',
+      location: 'Sarajevo',
+      warranties: 12,
+      isCertified: true,
     },
     update: {},
   });

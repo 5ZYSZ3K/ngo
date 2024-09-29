@@ -3,6 +3,8 @@ import type { NextPageWithLayout } from './_app';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/routers/_app';
 import { useRouter } from 'next/router';
+import { Header } from '~/components/Header';
+import { Container } from '~/components/Container';
 
 const RegisterPage: NextPageWithLayout = () => {
   const addFoundation = trpc.foundation.register.useMutation({
@@ -21,21 +23,12 @@ const RegisterPage: NextPageWithLayout = () => {
   // }, [foundationsQuery.data, utils]);
 
   return (
-    <div className="flex flex-col bg-gray-800 py-8">
-      <h1 className="text-4xl font-bold">Register a foundation</h1>
-
+    <Container>
+      <Header />
       <div className="flex flex-col py-8 items-center">
-        <h2 className="text-3xl font-semibold pb-2">Add a foundation</h2>
-
         <form
           className="py-2 w-4/6"
           onSubmit={async (e) => {
-            /**
-             * In a real app you probably don't want to use this manually
-             * Checkout React Hook Form - it works great with tRPC
-             * @see https://react-hook-form.com/
-             * @see https://kitchen-sink.trpc.io/react-hook-form
-             */
             e.preventDefault();
             const $form = e.currentTarget;
             const values = Object.fromEntries(new FormData($form));
@@ -45,9 +38,10 @@ const RegisterPage: NextPageWithLayout = () => {
             //    ^?
             const input: Input = {
               name: values.name as string,
-              text: values.text as string,
+              description: values.text as string,
               password: values.password as string,
               login: values.login as string,
+              location: values.location as string,
             };
             try {
               await addFoundation.mutateAsync(input);
@@ -61,15 +55,15 @@ const RegisterPage: NextPageWithLayout = () => {
         >
           <div className="flex flex-col gap-y-4 font-semibold">
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="name"
               name="name"
               type="text"
-              placeholder="Name"
+              placeholder="Nazwa"
               disabled={addFoundation.isPending}
             />
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="login"
               name="login"
               type="text"
@@ -77,35 +71,43 @@ const RegisterPage: NextPageWithLayout = () => {
               disabled={addFoundation.isPending}
             />
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="password"
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder="Hasło"
               disabled={addFoundation.isPending}
             />
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="rePassword"
               name="rePassword"
               type="password"
-              placeholder="Repeat password"
+              placeholder="Powtórz hasło"
               disabled={addFoundation.isPending}
             />
             <textarea
-              className="resize-none focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="resize-none focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="text"
               name="text"
-              placeholder="Text"
+              placeholder="Opis"
               disabled={addFoundation.isPending}
               rows={6}
             />
-
+            <input
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
+              id="location"
+              name="location"
+              type="text"
+              placeholder="Lokalizacja"
+              disabled={addFoundation.isPending}
+            />
             <div className="flex justify-center">
               <input
-                className="cursor-pointer bg-gray-900 p-2 rounded-md px-16"
+                className="cursor-pointer p-2 rounded-md px-16 bg-orange-500"
                 type="submit"
                 disabled={addFoundation.isPending}
+                value="Zarejestruj"
               />
               {addFoundation.error && (
                 <p style={{ color: 'red' }}>{addFoundation.error.message}</p>
@@ -114,7 +116,7 @@ const RegisterPage: NextPageWithLayout = () => {
           </div>
         </form>
       </div>
-    </div>
+    </Container>
   );
 };
 

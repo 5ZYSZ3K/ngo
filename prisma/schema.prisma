@@ -13,8 +13,11 @@ generator client {
 model Foundation {
   id    String @id @default(uuid())
   name String
-  text  String
+  description  String
   login String
+  warranties Int
+  isCertified Boolean?
+  location String
   passwdHash String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -23,7 +26,8 @@ model Foundation {
 
 model FoundationRequest {
   id    String @id @default(uuid())
-  text  String
+  description  String
+  shortDescription  String
   foundation Foundation @relation(fields: [foundation_id], references: [id])
   foundation_id String
 }

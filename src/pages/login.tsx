@@ -3,6 +3,8 @@ import type { NextPageWithLayout } from './_app';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/routers/_app';
 import { useRouter } from 'next/router';
+import { Header } from '~/components/Header';
+import { Container } from '~/components/Container';
 
 const RegisterPage: NextPageWithLayout = () => {
   const login = trpc.foundation.login.useMutation({
@@ -13,12 +15,10 @@ const RegisterPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col bg-gray-800 py-8">
-      <h1 className="text-4xl font-bold">Register a foundation</h1>
-
+    <Container>
+      <Header />
       <div className="flex flex-col py-8 items-center">
-        <h2 className="text-3xl font-semibold pb-2">Add a foundation</h2>
-
+        <h2 className="text-3xl font-semibold pb-2 text-orange-500">Login</h2>
         <form
           className="py-2 w-4/6"
           onSubmit={async (e) => {
@@ -49,7 +49,7 @@ const RegisterPage: NextPageWithLayout = () => {
         >
           <div className="flex flex-col gap-y-4 font-semibold">
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="login"
               name="login"
               type="text"
@@ -57,7 +57,7 @@ const RegisterPage: NextPageWithLayout = () => {
               disabled={login.isPending}
             />
             <input
-              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
               id="password"
               name="password"
               type="password"
@@ -67,9 +67,10 @@ const RegisterPage: NextPageWithLayout = () => {
 
             <div className="flex justify-center">
               <input
-                className="cursor-pointer bg-gray-900 p-2 rounded-md px-16"
+                className="cursor-pointer p-2 rounded-md px-16 bg-orange-500"
                 type="submit"
                 disabled={login.isPending}
+                value="Login"
               />
               {login.error && (
                 <p style={{ color: 'red' }}>{login.error.message}</p>
@@ -78,7 +79,7 @@ const RegisterPage: NextPageWithLayout = () => {
           </div>
         </form>
       </div>
-    </div>
+    </Container>
   );
 };
 

@@ -15,8 +15,9 @@ import { prisma } from '~/server/prisma';
  */
 const defaultFoundationRequestSelect = {
   id: true,
-  text: true,
-} satisfies Prisma.FoundationSelect;
+  description: true,
+  shortDescription: true,
+} satisfies Prisma.FoundationRequestSelect;
 
 export const foundationRequestsRouter = router({
   list: publicProcedure
@@ -82,7 +83,8 @@ export const foundationRequestsRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        text: z.string().min(1),
+        description: z.string().min(1).max(2999),
+        shortDescription: z.string().min(1).max(200),
       }),
     )
     .mutation(async ({ input, ctx }) => {

@@ -18,9 +18,12 @@ import jwt from 'jsonwebtoken';
 const defaultFoundationSelect = {
   id: true,
   name: true,
-  text: true,
+  description: true,
   createdAt: true,
   updatedAt: true,
+  location: true,
+  warranties: true,
+  isCertified: true,
 } satisfies Prisma.FoundationSelect;
 
 export const foundationRouter = router({
@@ -92,9 +95,10 @@ export const foundationRouter = router({
       z.object({
         id: z.string().uuid().optional(),
         name: z.string().min(1).max(32),
-        text: z.string().min(1),
+        description: z.string().min(1),
         login: z.string().min(1).max(32),
         password: z.string().min(1).max(100),
+        location: z.string().min(1).max(100),
       }),
     )
     .mutation(async ({ input }) => {
@@ -113,7 +117,10 @@ export const foundationRouter = router({
       const data = {
         ...input,
         passwdHash,
+        warranties: Math.floor(Math.random() * 50),
       };
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       delete data.password;
       const foundation = await prisma.foundation.create({
         data,

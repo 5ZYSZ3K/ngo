@@ -3,6 +3,8 @@ import type { NextPageWithLayout } from '../../_app';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/routers/_app';
 import { useRouter } from 'next/router';
+import { Container } from '~/components/Container';
+import { Header } from '~/components/Header';
 
 const RegisterPage: NextPageWithLayout = () => {
   const addFoundationRequest = trpc.foundationRequests.create.useMutation({
@@ -21,8 +23,11 @@ const RegisterPage: NextPageWithLayout = () => {
   // }, [foundationsQuery.data, utils]);
 
   return (
-    <div className="flex flex-col bg-gray-800 py-8">
-      <h1 className="text-4xl font-bold">Add a request</h1>
+    <Container>
+      <Header />
+      <h1 className="text-4xl font-semibold text-blue-700 text-center">
+        Zgłoszenie zapotrzebowania
+      </h1>
       <div className="flex flex-col py-8 items-center">
         <form
           className="py-2 w-4/6"
@@ -41,7 +46,8 @@ const RegisterPage: NextPageWithLayout = () => {
             >;
             //    ^?
             const input: Input = {
-              text: values.text as string,
+              description: values.description as string,
+              shortDescription: values.shortDescription as string,
             };
             try {
               await addFoundationRequest.mutateAsync(input);
@@ -54,20 +60,29 @@ const RegisterPage: NextPageWithLayout = () => {
           }}
         >
           <div className="flex flex-col gap-y-4 font-semibold">
+            <input
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
+              id="shortDescription"
+              name="shortDescription"
+              type="text"
+              placeholder="Tytuł"
+              disabled={addFoundationRequest.isPending}
+            />
             <textarea
-              className="resize-none focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 bg-gray-900"
-              id="text"
-              name="text"
-              placeholder="Text"
+              className="resize-none focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
+              id="description"
+              name="description"
+              placeholder="Opis"
               disabled={addFoundationRequest.isPending}
               rows={6}
             />
 
             <div className="flex justify-center">
               <input
-                className="cursor-pointer bg-gray-900 p-2 rounded-md px-16"
+                className="cursor-pointer p-2 rounded-md px-16 bg-orange-500"
                 type="submit"
                 disabled={addFoundationRequest.isPending}
+                value="Zgłoś"
               />
               {addFoundationRequest.error && (
                 <p style={{ color: 'red' }}>
@@ -78,7 +93,7 @@ const RegisterPage: NextPageWithLayout = () => {
           </div>
         </form>
       </div>
-    </div>
+    </Container>
   );
 };
 
