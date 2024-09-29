@@ -85,6 +85,7 @@ export const foundationRequestsRouter = router({
       z.object({
         description: z.string().min(1).max(2999),
         shortDescription: z.string().min(1).max(200),
+        url: z.string().url(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -102,6 +103,19 @@ export const foundationRequestsRouter = router({
     )
     .query(async ({ input }) => {
       console.log('matchPrompt', input);
-      return await prisma.foundationRequest.findMany({ where: {} });
+      const requests = await prisma.foundationRequest.findMany({ where: {} });
+      const toReturn: any[] | PromiseLike<any[]> = [];
+      await Promise.all(
+        requests.map(async (request) => {
+          const foundation = await prisma.foundation.findFirst({
+            where: { id: request.foundation_id },
+          });
+          toReturn.push({
+            ...request,
+            foundation,
+          });
+        }),
+      );
+      return toReturn;
     }),
 });

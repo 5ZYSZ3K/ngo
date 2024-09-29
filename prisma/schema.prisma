@@ -28,6 +28,7 @@ model FoundationRequest {
   id    String @id @default(uuid())
   description  String
   shortDescription  String
+  url String
   foundation Foundation @relation(fields: [foundation_id], references: [id])
   foundation_id String
 }

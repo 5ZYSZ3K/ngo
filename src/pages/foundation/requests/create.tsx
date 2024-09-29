@@ -48,6 +48,7 @@ const RegisterPage: NextPageWithLayout = () => {
             const input: Input = {
               description: values.description as string,
               shortDescription: values.shortDescription as string,
+              url: values.url as string,
             };
             try {
               await addFoundationRequest.mutateAsync(input);
@@ -66,6 +67,14 @@ const RegisterPage: NextPageWithLayout = () => {
               name="shortDescription"
               type="text"
               placeholder="Tytuł"
+              disabled={addFoundationRequest.isPending}
+            />
+            <input
+              className="focus-visible:outline-dashed outline-offset-4 outline-2 outline-gray-700 rounded-xl px-4 py-3 shadow-md"
+              id="url"
+              name="url"
+              type="text"
+              placeholder="Link do strony"
               disabled={addFoundationRequest.isPending}
             />
             <textarea
