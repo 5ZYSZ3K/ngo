@@ -3,8 +3,7 @@ import { decodeAndVerifyJwtToken } from '~/utils/auth';
 import { prisma } from './prisma';
 
 export async function createContext({
-  req,
-  res,
+  req, res
 }: trpcNext.CreateNextContextOptions) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Request-Method', '*');
